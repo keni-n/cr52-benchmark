@@ -53,11 +53,9 @@ void read_cp15_c15(ee_u32 *low, ee_u32 *high)
         "MRRC p15, 0, %0, %1, c15"
         : "=r"(*low), "=r"(*high)
     );
-    ee_printf("Read ");
 
     *low &= ~(3 << 25); /* clear */
     *low |= 0 << 25;
-    ee_printf("Modify ");
 
     __asm__ volatile (
         "MCRR p15, 0, %0, %1, c15\n\t"
@@ -65,13 +63,11 @@ void read_cp15_c15(ee_u32 *low, ee_u32 *high)
         : "r" (*low), "r"(*high)
         : "memory"
     );
-    ee_printf("Write ");
 
     __asm__ volatile (
         "MRRC p15, 0, %0, %1, c15"
         : "=r"(*low), "=r"(*high)
     );
-    ee_printf("Read\n");
 }
 
 void cache_enable_el1_el0(void)
@@ -105,7 +101,7 @@ void modify_imp_bpctlr(void) {
         "MRC p15, 1, %0, c9, c1, 1\n\t"   /* IMP_BPCTLR read  */
         : "=r" (val) : : "memory"
     );
-    ee_printf("before IMP_BPCTLR = 0x%08x\n", val);
+    //ee_printf("before IMP_BPCTLR = 0x%08x\n", val);
 
     val &= 0xFFFFFFF8;                    /* clear bits [2:0] */
 
@@ -159,7 +155,7 @@ void disable_mem_protect(void)
         "MRC p15, 1, %0, c9, c1, 2\n\t"   /* IMP_MEMPROTCTLR read */
         : "=r" (val) : : "memory"
     );
-    ee_printf("before IMP_MEMPROTCTLR = 0x%08x\n", val);
+    //ee_printf("before IMP_MEMPROTCTLR = 0x%08x\n", val);
 
     val = 0;
 

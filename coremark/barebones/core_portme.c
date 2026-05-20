@@ -153,11 +153,13 @@ void writer_main(void)
 	/* Settle time before the first console output / the benchmark. */
 	delay_sec(1);
 
+	ee_printf("\nCoremark Benchmark: It takes about 8 minutes to complete.\n");
+
 	read_ccsidr(&val, &val2);
-	ee_printf("CCSIDR I=%08x, D=%08x\n", val, val2);
+	//ee_printf("CCSIDR I=%08x, D=%08x\n", val, val2);
 
 	read_cp15_c15( &low, &high);
-	ee_printf("CPUACTLR High=%08x, Low=%08x\n", high, low);
+	//ee_printf("CPUACTLR High=%08x, Low=%08x\n", high, low);
 
 	modify_imp_bpctlr();
 	disable_mem_protect();

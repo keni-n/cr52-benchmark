@@ -53,6 +53,8 @@ void writer_main(void)
     /* Settle time before the first console output / the benchmark. */
     delay_sec(1);
 
+	ee_printf("\n");
+
     modify_imp_bpctlr();
     disable_mem_protect();
     cache_enable_el2();

@@ -283,9 +283,7 @@ for (i = 0; i < MULTITHREAD; i++)
 #else
     iterate(&results[0]);
 #endif
-	ee_printf("end1-----");
     stop_time();
-	ee_printf("end2-----");
     pmu_disable();
     pmu_report();
     total_time = get_time();
