@@ -1,0 +1,80 @@
+
+/* on Code-SRAM*/
+MEMORY {
+        RAM  (rwxa): ORIGIN = 0x08000000, LENGTH = 0x00008000
+        RAM2 (rwxa): ORIGIN = 0x08008000, LENGTH = 0x00008000
+}
+
+
+/* on DRAM
+MEMORY {
+        RAM  (rwxa): ORIGIN = 0x40000000, LENGTH = 0x00008000
+        RAM2 (rwxa): ORIGIN = 0x40008000, LENGTH = 0x00008000
+}
+*/
+
+
+/* on TCM
+MEMORY {
+        RAM  (rwxa): ORIGIN = 0x20000000, LENGTH = 0x00008000
+        RAM2 (rwxa): ORIGIN = 0x20008000, LENGTH = 0x00008000
+}
+*/
+
+
+/* on RT-VRAM
+MEMORY {
+        RAM  (rwxa): ORIGIN = 0x10200800, LENGTH = 0x00040000
+        RAM2 (rwxa): ORIGIN = 0x10208000, LENGTH = 0x00040000
+}
+*/
+
+/* on RT-SRAM
+MEMORY {
+        RAM  (rwxa): ORIGIN = 0x18400000, LENGTH = 0x00008000
+        RAM2 (rwxa): ORIGIN = 0x18408000, LENGTH = 0x00008000
+}
+*/
+
+/*
+ for A-core on X5H U-Boot
+MEMORY {
+        RAM  (rwxa): ORIGIN = 0x61080000, LENGTH = 0x00080000
+        RAM2 (rwxa): ORIGIN = 0x61088000, LENGTH = 0x00080000
+}
+*/
+
+SECTIONS
+{
+	.text : {
+		*(.text*)
+		*(.rodata*)
+		. = NEXT(64);
+		__RO_END__ = .;
+	} > RAM
+
+	.data : {
+		__DATA_START__ = .;
+		 *(.data)
+		. = NEXT(64);
+		__DATA_END__ = .;
+	} > RAM2
+
+	__DATA_SIZE__ = SIZEOF(.data);
+
+	.bss : {
+		__BSS_START__ = .;
+		 *(.bss)
+		 *(COMMON)
+		 . = NEXT(64);
+		__BSS_END__ = .;
+	} > RAM
+
+	stacks (NOLOAD) : ALIGN(64) {
+		__STACKS_START__ = .;
+		KEEP(*(writer_stack))
+		__STACKS_END__ = .;
+	} > RAM2
+
+	__BSS_SIZE__ = SIZEOF(.bss);
+}

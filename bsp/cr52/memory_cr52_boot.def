@@ -1,0 +1,72 @@
+/*
+MEMORY {
+        CERT (rxa): ORIGIN = 0xEB203000, LENGTH = 0x00000300
+        ROM  (rxa): ORIGIN = 0xEB210000, LENGTH = 0x00007000
+        RAM (rwxa): ORIGIN = 0xEB217000, LENGTH = 0x00001000
+        STACK (rwxa): ORIGIN = 0xEB218000, LENGTH = 0x00004000
+}
+*/
+
+/*
+MEMORY {
+        CERT (rxa): ORIGIN = 0xEB203000, LENGTH = 0x00000300
+        ROM  (rxa): ORIGIN = 0xEB210000, LENGTH = 0x00007000
+        RAM (rwxa): ORIGIN = 0x20000000, LENGTH = 0x00008000
+        STACK (rwxa): ORIGIN = 0x20008000, LENGTH = 0x00004000
+}
+*/
+
+MEMORY {
+        ROM  (rxa): ORIGIN = 0x40040000, LENGTH = 0x00008000
+        RAM (rwxa): ORIGIN = 0x40048000, LENGTH = 0x00008000
+        STACK (rwxa): ORIGIN = 0x4005000, LENGTH = 0x00004000
+}
+
+SECTIONS
+{
+/*
+    .cert : {
+        . = 0x000C;
+        KEEP(*(.cert_offset))
+        . = 0x00000154;
+        KEEP(*(.cert_addr))
+        . = 0x00000264;
+        KEEP(*(.cert_size))
+    } > CERT
+*/
+
+	.text : {
+		*(.text*)
+		*(.rodata*)
+		. = ALIGN(16);
+		__DATA_COPY_START__ = .;
+	} > ROM
+
+	.data : AT(__DATA_COPY_START__) {
+		__DATA_START__ = .;
+		 *(.data)
+		. = NEXT(16);
+		__DATA_END__ = .;
+	} > RAM
+
+	__DATA_SIZE__ = SIZEOF(.data);
+
+	.bss : {
+		__BSS_START__ = .;
+		 *(.bss)
+		 *(COMMON)
+		 . = NEXT(64);
+		__BSS_END__ = .;
+	} > RAM
+
+	stacks (NOLOAD) : ALIGN(64) {
+		__STACKS_START__ = .;
+		. = . + 0x4000;
+		__STACKS_END__ = .;
+	} > STACK
+
+	__BSS_SIZE__ = SIZEOF(.bss);
+}
+
+ENTRY(Reset_Handler)
+

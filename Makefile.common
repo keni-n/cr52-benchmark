@@ -1,0 +1,41 @@
+# ---------------------------------------------------------------------------
+# Makefile.common - shared build configuration for the CR52 bare-metal
+# benchmarks (CoreMark, Dhrystone).
+#
+# Included by coremark/barebones/core_portme.mak and dhrystone/Makefile.
+# It centralises the toolchain, compiler/assembler flags, the target-SoC
+# selection (LSI) and the location + source list of the shared BSP. Both
+# benchmarks are built from sibling directories, so the BSP sits at
+# ../bsp/cr52 relative to either Makefile's working directory.
+# ---------------------------------------------------------------------------
+
+# Target SoC: V4H (default) or X5H. Override on the command line: make LSI=X5H
+LSI ?= V4H
+
+# Shared CR52 board-support package.
+BSP_DIR ?= ../bsp/cr52
+
+# Toolchain.
+CROSS ?= arm-none-eabi-
+CC := $(CROSS)gcc
+LD := $(CROSS)ld
+AS := $(CROSS)as
+OC := $(CROSS)objcopy
+OD := $(CROSS)objdump
+
+# Compiler/assembler flags. Identical flags for both benchmarks so codegen
+# quality is directly comparable.
+PORT_CFLAGS    ?= -O3 -g -mcpu=cortex-r52 -mfpu=neon-fp-armv8 -static -fno-builtin
+ASFLAGS_COMMON ?= -mcpu=cortex-r52 -g
+
+# Per-SoC linker script (memory map) provided by the BSP.
+ifeq ($(LSI),V4H)
+LDSCRIPT ?= $(BSP_DIR)/memory_cr52_boot.def
+endif
+ifeq ($(LSI),X5H)
+LDSCRIPT ?= $(BSP_DIR)/memory_x5h_jet2.def
+endif
+
+# Shared BSP sources: console (ee_printf/cvt), PMU wrappers and CPU bring-up.
+# boot_mon.s is assembled separately (see per-benchmark Makefiles).
+BSP_CSRCS := ee_printf.c cvt.c pmu.c cr52_hw.c

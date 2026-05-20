@@ -1,0 +1,14 @@
+# Build artifacts
+*.o
+*.elf
+*.bin
+*.mot
+
+# CoreMark / Dhrystone map files
+coremark.map
+dhrystone.map
+
+# CoreMark run/score outputs
+run*.log
+*.info
+index.html
