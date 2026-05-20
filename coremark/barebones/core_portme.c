@@ -150,6 +150,9 @@ void writer_main(void)
 	ee_u32 val;
 	ee_u32 val2;
 
+	/* Settle time before the first console output / the benchmark. */
+	delay_sec(1);
+
 	read_ccsidr(&val, &val2);
 	ee_printf("CCSIDR I=%08x, D=%08x\n", val, val2);
 

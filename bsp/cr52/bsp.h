@@ -50,6 +50,7 @@ char *fcvtbuf(double arg, int ndigits, int *decpt, int *sign, char *buf);
 
 void  scmt_init(void);   /* stop, free-run config, start                */
 ee_u32 scmt_read(void);  /* current CMSCNT value                        */
+void  delay_sec(ee_u32 sec); /* busy-wait N seconds using the SCMT timer */
 
 /* ------------------------------------------------------------------ */
 /* CPU bring-up (cr52_hw.c)                                            */

@@ -27,6 +27,23 @@ ee_u32 scmt_read(void)
     return CMSCNT;
 }
 
+/* Busy-wait for `sec` seconds using the SCMT free-running counter
+   (OSCCLK/1 = CLOCKS_PER_SEC ticks/sec). Independent of the (unknown)
+   CPU clock. This (re)configures the timer; the benchmark re-initialises
+   it via scmt_init() before its own measurement. */
+void delay_sec(ee_u32 sec)
+{
+    ee_u32 ticks = sec * (ee_u32)CLOCKS_PER_SEC;
+    ee_u32 start;
+
+    scmt_init();
+    start = scmt_read();
+    while ((scmt_read() - start) < ticks)
+    {
+        /* spin */
+    }
+}
+
 /* ------------------------------------------------------------------ */
 /* Cache / TCM / MPU / branch predictor                                */
 /* ------------------------------------------------------------------ */
